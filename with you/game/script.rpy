@@ -33,7 +33,9 @@ define kid = Character("Shíyuè", color="#c8ffc8")
 label start:
 
     scene bg peach
-    "You are in \"label start\""
+    "The morning sunlight seeps in through the blinds of your studio apartment."
+    "The hums of the city outside are louder than usual"
+    "You try forcing your eyes close"
     call screen door1
 
     label end: 
