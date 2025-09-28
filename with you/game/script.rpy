@@ -32,10 +32,17 @@ define kid = Character("Shíyuè", color="#c8ffc8")
 
 label start:
 
-    scene bg peach
+    scene bg bedroom
     "The morning sunlight seeps in through the blinds of your studio apartment."
     "The hums of the city outside are louder than usual"
     "You try forcing your eyes close"
+    play sound "audio/alarm-sund-radar.mp3"
+    "..."
+    "You lie still for a moment and grab your phone on the nightstand"
+
+    show phone1 at top
+    with easeinbottom
+
     call screen door1
 
     label end: 
@@ -45,7 +52,7 @@ label start:
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
 
-    scene bg room2
+    scene bg choice
     with dissolve
 
     # This shows a character sprite. A placeholder is used, but you can

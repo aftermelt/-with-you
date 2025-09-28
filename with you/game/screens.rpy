@@ -77,7 +77,7 @@ screen door1:
     imagebutton:
         xanchor 0.5
         yanchor 0.5
-        xpos 0.5
+        xpos 0.75
         ypos 0.28
         auto "door_%s.png"
         action [Hide("displayTextScreen"), Jump("end")]
