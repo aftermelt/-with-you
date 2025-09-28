@@ -86,6 +86,33 @@ screen door1:
             displayText = "The logo is hovered! (click to end)") 
         unhovered Hide("displayTextScreen")
 
+screen kidChoice: 
+    imagebutton:
+        xanchor 0.5
+        yanchor 0.5
+        xpos 0.75
+        ypos 0.28
+        auto "kid.png"
+        action [Hide("displayTextScreen"), Jump("end")]
+
+        hovered Show("displayTextScreen", 
+            displayText = "The logo is hovered! (click to end)") 
+        unhovered Hide("displayTextScreen")
+
+screen jobChoice: 
+    imagebutton:
+        xanchor 0.5
+        yanchor 0.5
+        xpos 0.75
+        ypos 0.28
+        auto "job.png"
+        action [Hide("displayTextScreen"), Jump("end")]
+
+        hovered Show("displayTextScreen", 
+            displayText = "The logo is hovered! (click to end)") 
+        unhovered Hide("displayTextScreen")
+
+
 
 ## Say screen ##################################################################
 ##
@@ -238,7 +265,6 @@ screen quick_menu():
     zorder 100
 
     if quick_menu:
-        add "gui/overlay/quick.png"
 
         hbox:
             style_prefix "quick"
