@@ -81,6 +81,25 @@ style frame:
 ## In-game screens
 ################################################################################
 
+screen displayTextScreen(displayText=""):
+        frame:
+            xalign 0.5
+            yalign 0.15
+            padding (20, 10)
+            text displayText color "#fff" size 28
+
+screen door1: 
+    imagebutton:
+        xanchor 0.5
+        yanchor 0.5
+        xpos 0.5
+        ypos 0.28
+        auto "door_%s.png"
+        action [Hide("displayTextScreen"), Jump("end")]
+
+        hovered Show("displayTextScreen", 
+            displayText = "The logo is hovered! (click to end)") 
+        unhovered Hide("displayTextScreen")
 
 ## Say screen ##################################################################
 ##
