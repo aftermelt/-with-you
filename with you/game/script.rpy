@@ -1,5 +1,6 @@
 ﻿# The script of the game goes in this file.
 
+# kitchen ----------------------
 default enokiMushroom = 0
 default bigMushroom = 0
 default beef = 0
@@ -7,9 +8,15 @@ default peppers = 0
 default lettuce = 0
 default tomato = 0
 default chickenbreast = 0
+# logic ------------------------
 default kidPoints = 0
 default jobPoints = 0
-
+default day_multiplier = 1
+# office -----------------------
+default points = 10
+default plus = 2
+default max_point = 50
+default clicked = False
 
 transform halfsize:
     zoom 0.8
@@ -65,7 +72,7 @@ init python:
             mail_events.append("Welcome to the team! We are thrilled to have you join our organization and look forward to the fresh perspective you'll bring. Your workspace is ready with all necessary materials and access credentials.!")
         if day == 3:
             mail_events.append("Your child's first quarter report card is now available for review through our online parent portal. Please review the grades and teacher comments, and feel free to contact teachers if you have questions about your child's progress.")
-        if day == 7:
+        if day >= 5 and day <= 7:
             mail_events.append("Recent economic reports show unemployment rates have reached unprecedented levels in our region. Career counseling, job placement assistance, and retraining programs are available through our community resource center for those affected.")
         if day == 30:
             mail_events.append("Parent-teacher conferences are scheduled for next week to discuss your child's progress this semester. Please use our online scheduling system to book your preferred appointment time as soon as possible.")
@@ -84,6 +91,13 @@ init python:
             mail_events.append("Your child is maintaining average performance. He seems content and is keeping up with assignments. Encourage him to keep up the good work.")
         return mail_events
 
+    def time_acceleration(day):
+        if (day >= 5 and day <= 7):
+            return 7
+        elif day > 30:
+            return 30
+        return 1
+
     def drag_placed(drags,drop):
         renpy.play("audio/splash.mp3", channel="sound")
         if not drop:
@@ -98,6 +112,9 @@ init python:
         return True
 
 label morning_loop:
+
+    $ day_multiplier = time_acceleration(day)
+    $ day *= day_multiplier
 
     # ENDING HANDLING
     
@@ -200,11 +217,15 @@ label morning_loop:
             $ jobPoints += 1
             $ kidPoints -= 1
             $ day += 1
-            stop music fadeout 0.3
             "You go to work. Shíyuè seems disappointed, but you earn money."
             "Don't worry, you still have time. Tomorrow is another day."
 
             # JOB MINIGAME
+            stop music fadeout 0.3
+            scene Office_Table
+            centered "Get Ready!{w=1}{nw}"
+            call screen clicker
+
 
     jump morning_loop
 
@@ -260,6 +281,16 @@ label hotpotCheck:
     else:
         jump hotpotMinigame
 
+
+
+label win:
+    $ renpy.pause(2, hard=True)
+    centered "Completed! :D"
+    return
+
+label lost:
+    centered "Failed! :( "
+    return
 
 screen setDragImages:
     add "kitchen.png"
@@ -447,3 +478,58 @@ screen setDragImages:
             droppable False
             dragged drag_placed
             drag_raise True
+
+transform flash_anim:
+    alpha 1.0
+    linear 0.3 alpha 0.0
+
+screen clicker:
+    modal True
+
+    add "Office Table.png"
+
+    timer 0.5 repeat True action [
+        If(points <= 0, true=Jump("lost"), false=SetVariable("points", points - plus))
+    ]
+
+    imagebutton:
+        idle "yellow button.png"
+        action [
+            Play("sound", "click.wav"),
+            SetVariable("clicked", False),
+            If(points >= max_point, true=Jump("win"), false=SetVariable("points", points + plus))
+        ]
+        xpos 0.5
+        ypos 0.5
+        anchor (0.5, 0.5)
+        xysize (300, 300)
+
+    text "Score":
+        xpos 0.62
+        ypos 0.3
+        xanchor 1.0
+        yanchor 0.5
+        size 30
+        color "#FFFFFF"
+        font "DejaVuSans-Bold.ttf"
+        outlines [(1, "#000000", 0, 0)]
+
+    text "[points] / [max_point]":
+        xpos 0.65
+        ypos 0.35
+        xanchor 1.0
+        yanchor 0.5
+        size 50
+        color "#FFD700"
+        font "DejaVuSans-Bold.ttf"
+        outlines [(2, "#000000", 0, 0)]
+        drop_shadow (2, 2)
+
+    vbar:
+        value StaticValue(points, max_point)
+        xpos 0.05
+        ypos 0.5
+        xanchor 0.0
+        yanchor 0.5
+        xsize 40
+        ysize 400
