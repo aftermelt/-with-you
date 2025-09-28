@@ -309,11 +309,25 @@ style quick_button_text:
 
 screen navigation():
 
+    fixed:
+        style_prefix "navigation"
+        # xpos gui.navigation_xpos
+        # yalign 0.5
+
+        spacing gui.navigation_spacing
+
+        if main_menu:
+            imagebutton auto "gui/options/game_start_%s.png" focus_mask True action Start() hovered [ Play("sound", "audio/click.mp3")]
+            imagebutton auto "gui/options/game_options_%s.png" focus_mask True action ShowMenu("preferences") hovered [ Play("sound", "audio/click.mp3")]
+            
+
+    
     hbox:
         style_prefix "navigation"
         xoffset 680
         yoffset 90
         spacing 100
+
 
         # textbutton _("START") action Start()
         # textbutton _("LOAD") action ShowMenu("load")
@@ -361,16 +375,16 @@ screen main_menu():
     ## contents of the main menu are in the navigation screen.
     use navigation
 
-    if gui.show_name:
+    # if gui.show_name:
 
-        vbox:
-            style "main_menu_vbox"
+    #     vbox:
+    #         style "main_menu_vbox"
 
-            text "[config.name!t]":
-                style "main_menu_title"
+    #         text "[config.name!t]":
+    #             style "main_menu_title"
 
-            text "[config.version]":
-                style "main_menu_version"
+    #         text "[config.version]":
+    #             style "main_menu_version"
 
 
 style main_menu_frame is empty

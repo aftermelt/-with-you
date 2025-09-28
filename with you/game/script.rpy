@@ -1,5 +1,16 @@
 ﻿# The script of the game goes in this file.
 
+default enokiMushroom = 0
+default bigMushroom = 0
+default beef = 0
+default peppers = 0
+default lettuce = 0
+default tomato = 0
+default chickenbreast = 0
+default kidPoints = 0
+default jobPoints = 0
+
+
 transform halfsize:
     zoom 0.8
 
@@ -10,6 +21,7 @@ label introduction:
     scene bg sleep
 
     "It's time to wake up."
+    play music "audio/morning.wav" fadein 0.5 loop
 
     scene bg bedroom
     with dissolve
@@ -44,9 +56,8 @@ define kid = Character("Shíyuè", color="#2db6c8")
 
 init python:
     day = 1
-    kidPoints = 0
-    jobPoints = 0
     mail = []
+
     def check_mail(day, kidPoints):
         mail_events = []
         # Time-based mail
@@ -73,9 +84,28 @@ init python:
             mail_events.append("Your child is maintaining average performance. He seems content and is keeping up with assignments. Encourage him to keep up the good work.")
         return mail_events
 
+    def drag_placed(drags,drop):
+        renpy.play("audio/splash.mp3", channel="sound")
+        if not drop:
+            return
+
+
+        store.draggable = drags[0].drag_name
+        store.droppable = drop.drag_name
+        
+
+
+        return True
+
 label morning_loop:
+
+    # ENDING HANDLING
+    
+
+    stop music fadeout 0.3
     scene bg sleep
     "It's time to wake up."
+    play music "audio/morning.wav" fadein 0.5 loop
 
     "Day [day]"
     "KidPoints: [kidPoints] | JobPoints: [jobPoints]"
@@ -88,12 +118,13 @@ label morning_loop:
 
     show mail at top
     with easeinbottom
-
+    play sound "audio/envelope.mp3"
     $ mail = check_mail(day, kidPoints)
     if mail:
         "You check your mailbox."
         $ mail_text = "\n".join(mail)
         "[mail_text]"
+
 
         hide mail
         with easeouttop
@@ -158,11 +189,18 @@ label morning_loop:
             "Don't worry, you still have time. Tomorrow is another day."
 
             # KITCHEN MINIGAME
+            stop music fadeout 0.3
+            scene kitchen
+            play music "audio/cooking.wav" fadein 0.5 loop
+            call hotpotMinigame
+
+
 
         "Go to job":
             $ jobPoints += 1
             $ kidPoints -= 1
             $ day += 1
+            stop music fadeout 0.3
             "You go to work. Shíyuè seems disappointed, but you earn money."
             "Don't worry, you still have time. Tomorrow is another day."
 
@@ -171,3 +209,241 @@ label morning_loop:
     jump morning_loop
 
     return
+
+label hotpotMinigame:
+    call screen setDragImages
+   
+    if draggable == "Beef":
+        $ beef += 1
+   
+    elif draggable == "Enoki Mushroom":
+        $ enokiMushroom += 1
+   
+    elif draggable == "Big Mushroom":
+        $ bigMushroom += 1
+   
+    elif draggable == "Lettuce":
+        $ lettuce += 1
+   
+    elif draggable == "Peppers":
+        $ peppers += 1
+   
+    elif draggable == "Chicken Breast":
+        $ chickenbreast += 1
+   
+    elif draggable == "Tomato":
+        $ tomato += 1
+
+
+    call hotpotCheck
+
+
+    return
+label hotpotCheck:
+    image finalHotpot = "hotpotfinally.png"
+    image failHotpot = "hotpotfail.png"
+   
+    if (beef == 2 and enokiMushroom == 1 and bigMushroom == 2 and lettuce == 1 and peppers == 1):
+        show finalHotpot
+        "You made Hot Pot!"
+        $ kidPoints += 2
+    elif (tomato > 0 or chickenbreast > 0):
+        show failHotpot
+        "You ruined Hot Pot!"
+        $ kidPoints -= 1
+    elif (beef > 2 or bigMushroom > 2 or enokiMushroom > 1 or lettuce > 1 or peppers > 1):
+        show failHotpot
+        "You ruined Hot Pot!"
+        $ kidPoints -= 1
+
+
+    else:
+        jump hotpotMinigame
+
+
+screen setDragImages:
+    add "kitchen.png"
+
+
+    text "Make Hotpot for Shíyuè! Read the recipe on the right and":
+        pos (10, 50)
+        bold True
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]
+
+
+    text "drag the correct ingredients into the pot. You only get one chance!":
+        pos (10, 90)
+        bold True
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]
+
+
+    text "Hotpot Recipe:":
+        pos (1400, 50)
+        bold True
+        color "#120624"
+
+
+    text "Enoki Mushroom x1":
+        pos (1400, 100)
+        color "#120624"
+
+
+
+
+    text "Big Mushroom x2":
+        pos (1400, 140)
+        color "#120624"
+
+
+    text "Beef x2":
+        pos (1400, 180)
+        color "#120624"
+
+
+    text "Lettuce x1":
+        pos (1400, 220)
+        color "#120624"
+   
+    text "Peppers x1":
+        pos (1400, 260)
+        color "#120624"
+
+
+    text "Enoki Mushroom = [enokiMushroom]":
+        pos (1520, 500)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+
+
+    text "Big Mushroom = [bigMushroom]":
+        pos (1520, 550)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+
+
+    text "Beef = [beef]":
+        pos (1520, 600)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+
+
+    text "Peppers = [peppers]":
+        pos (1520, 650)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+
+
+    text "Lettuce = [lettuce]":
+        pos (1520, 700)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+
+
+    text "Chicken Breast = [chickenbreast]":
+        pos (1520, 750)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+
+
+    text "Tomato = [tomato]":
+        pos (1520, 800)
+        color "#120624"
+        outlines [(3, "#FFFFFF", 0, 0)]  # white outline, thickness 3
+   
+    draggroup:
+        drag:
+            drag_name "pot"
+            xpos 670
+            ypos 400
+            child "pot.png"
+            draggable False
+            droppable True
+
+
+        drag:
+            drag_name "Enoki Mushroom"
+            xpos 50
+            ypos 220
+            child im.Scale("enokimushrooms.png", 150, 150)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Big Mushroom"
+            xpos 400
+            ypos 220
+            child im.Scale("bigmushroom.png", 150, 150)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Beef"
+            xpos 150
+            ypos 300
+            child im.Scale("beef.png", 200, 200)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Peppers"
+            xpos 350
+            ypos 350
+            child im.Scale("peppers.png", 200, 200)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Lettuce"
+            xpos 50
+            ypos 650
+            child im.Scale("lettuce.png", 200, 200)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Tomato"
+            xpos 20
+            ypos 450
+            child im.Scale("tomato.png", 200, 200)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
+
+
+        drag:
+            drag_name "Chicken Breast"
+            xpos 300
+            ypos 550
+            child im.Scale("chickenbreast.png", 200, 200)
+            draggable True
+            droppable False
+            dragged drag_placed
+            drag_raise True
