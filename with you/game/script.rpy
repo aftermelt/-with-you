@@ -44,49 +44,54 @@ label start:
     # images directory to show it.
 
     scene bg room2
+    with dissolve
 
     # This shows a character sprite. A placeholder is used, but you can
     # replace it by adding a file named "eileen happy.png" to the images
     # directory.
 
     show tns1 at left
+    with easeinleft
+    with hpunch
+
+
 
 
     # These display lines of dialogue.
 
-    kid "brooooo no.1 victory royale."
+    # kid "brooooo no.1 victory royale."
 
-    "*thinks to self* im finna slime ts kid out word my vrother"
+    # "*thinks to self* im finna slime ts kid out word my vrother"
 
-    kid "ayoooo sus"
+    # kid "ayoooo sus"
 
-    "yeahhh j hurry up n graduate college li lbro"
+    # "yeahhh j hurry up n graduate college li lbro"
 
-    menu:
-        "*slime him out*":
-            jump slimehim
-        "*feed him mint gum*":
-            jump book
+    # menu:
+    #     "*slime him out*":
+    #         jump slimehim
+    #     "*feed him mint gum*":
+    #         jump book
     
-    label slimehim:
+    # label slimehim:
 
-    kid "nooo i hav ebeen slimed man w speed"
+    # kid "nooo i hav ebeen slimed man w speed"
 
-    jump death
+    # jump death
 
-    label mint:
+    # label mint:
 
-    kid "ts gum sooo kevin"
+    # kid "ts gum sooo kevin"
 
-    "it's poisioned cuh"
+    # "it's poisioned cuh"
 
-    kid "fuhhhh"
+    # kid "fuhhhh"
 
-    jump death
+    # jump death
 
-    label death:
+    # label death:
 
-    "s has died LOOOOL"
+    # "kid has died LOOOOL"
 
     # This ends the game.
 
