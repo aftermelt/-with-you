@@ -315,12 +315,12 @@ screen navigation():
         yoffset 90
         spacing 100
 
-        textbutton _("START") action Start()
-        textbutton _("LOAD") action ShowMenu("load")
-        textbutton _("OPTIONS") action ShowMenu("preferences")
-        textbutton _("GALLERY") action ShowMenu("gallery")
-        textbutton _("CREDITS") action ShowMenu("about")
-        textbutton _("EXIT") action Quit(confirm=not main_menu)
+        # textbutton _("START") action Start()
+        # textbutton _("LOAD") action ShowMenu("load")
+        # textbutton _("OPTIONS") action ShowMenu("preferences")
+        # textbutton _("GALLERY") action ShowMenu("gallery")
+        # textbutton _("CREDITS") action ShowMenu("about")
+        # textbutton _("EXIT") action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button

@@ -9,15 +9,13 @@ label start:
 label introduction:
     scene bg sleep
 
-    show game_boy_indifferent at halfsize, center
-    with easeinleft
     "It's time to wake up."
 
     scene bg bedroom
     with dissolve
     "The morning sunlight seeps in through the blinds of your studio apartment."
-    "The hums of the city outside are louder than usual"
-    "You try forcing your eyes close"
+    "The hums of the city outside are louder than usual."
+    "You try forcing your eyes close."
     play sound "audio/alarm-sund-radar.mp3"
     "..."
     "You lie still for a moment. Then you grab your phone from the nightstand."
@@ -42,7 +40,7 @@ label introduction:
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
 
-define kid = Character("Shíyuè", color="#c8ffc8") 
+define kid = Character("Shíyuè", color="#2db6c8") 
 
 init python:
     day = 1
@@ -107,74 +105,69 @@ label morning_loop:
     scene bg choice
     with dissolve
 
-    "You stand looking at two paths. One leads to the doorway out of your apartment. "
-    "The other opens left, to the kitchen where your child sits, swinging his legs on a chair."
-    "He looks at you with big, hopeful eyes."
+    # daily dialogue
+    if day == 1:
+        "You stand looking at two paths. One leads to the doorway out of your apartment."
+        "The other opens left, to the kitchen where your child sits, swinging his legs on a chair."
+        "He looks at you with big, hopeful eyes."
+        show game_boy_indifferent at halfsize, center
+        with easeinbottom
+        kid "You're always so busy, Mom, but I wanted to see you."
+    elif kidPoints <= -4 and day > 1:
+        "Your kid looks bitter and sobs."
+        "He scoots away from you as you enter the room."
+        show game_boy_cry at halfsize, center
+        with easeinbottom
+        kid "..."
+    elif kidPoints >= 4 and day > 1:
+        "Your kid is bursting with glee."
+        "He runs to you as you enter the room."
+        show game_boy_happy at halfsize, center
+        with easeinbottom
+        with hpunch
+        kid "HIIIII MOMMY!!! I MISSED YOU SO MUCH!!!"
+    elif kidPoints >= 2 and day > 1:
+        "Your kid looks happy and energetic."
+        "He waves to you as you enter the room."
+        show game_boy_smile at halfsize, center
+        with easeinbottom
+        with hpunch
+        kid "Great to see you, Mom!"
+    elif kidPoints == 0 and day > 1:
+        "Your kid looks bored."
+        show game_boy_indifferent at halfsize, center
+        with easeinbottom
+        kid "Hi..."
+    elif kidPoints <= -2 and day > 1:
+        "Your kid looks sad and withdrawn."
+        "He barely acknowledges you as you enter the room."
+        show game_boy_indifferent at halfsize, center
+        with easeinbottom
+        kid "*sneezes*"
+    
 
-    show game_boy_indifferent at halfsize, left
-    with easeinleft
-    with hpunch
-
-    kid "Mom said you were busy, but I wanted to see you."
-    "You feel a pang of guilt."
-    "You can either leave him there, or go see what he wants."
-    "But you also have to get to work. Money is tight, and food is running low."
+    "Time waits for no one."
+    "Decide how to spend your day. With your kid, or at work."
 
     menu:
         "Take care of kid":
             $ kidPoints += 1
             $ jobPoints -= 1
             $ day += 1
-            "You spend time with your kid. He seems happier, but you miss work."
+            "You spend time with Shíyuè. He seems happier, but you miss work."
+            "Don't worry, you still have time. Tomorrow is another day."
+
+            # KITCHEN MINIGAME
+
         "Go to job":
             $ jobPoints += 1
             $ kidPoints -= 1
             $ day += 1
-            "You go to work. Your kid seems disappointed, but you earn money."
+            "You go to work. Shíyuè seems disappointed, but you earn money."
+            "Don't worry, you still have time. Tomorrow is another day."
+
+            # JOB MINIGAME
 
     jump morning_loop
-
-
-
-    # These display lines of dialogue.
-        # Example: update points based on choices
-        # $ kidPoints += 1
-        # $ jobPoints -= 1
-
-    # kid "brooooo no.1 victory royale."
-
-    # "*thinks to self* im finna slime ts kid out word my vrother"
-
-    # kid "ayoooo sus"
-
-    # "yeahhh j hurry up n graduate college li lbro"
-
-    # menu:
-    #     "*slime him out*":
-    #         jump slimehim
-    #     "*feed him mint gum*":
-    #         jump book
-    
-    # label slimehim:
-
-    # kid "nooo i hav ebeen slimed man w speed"
-
-    # jump death
-
-    # label mint:
-
-    # kid "ts gum sooo kevin"
-
-    # "it's poisioned cuh"
-
-    # kid "fuhhhh"
-
-    # jump death
-
-    # label death:
-
-    # "kid has died LOOOOL"
-
-    # This ends the game.
 
     return
