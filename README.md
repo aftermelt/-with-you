@@ -21,3 +21,5 @@ The life story of a relatable dynamic of a sick Chinese immigrant parent and the
 - Alan Chen - Descriptive Writer / Director of Testing
 
 **Link to Itch.io:** https://23chinese.itch.io/with-you 
+
+<img width="1920" height="1080" alt="game_mainscreenTITLE" src="https://github.com/user-attachments/assets/742c70ec-d7bb-4b95-95df-ad83be57d727" />
