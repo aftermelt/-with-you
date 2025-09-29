@@ -8,7 +8,7 @@ https://itch.io/jam/texas-game-jam-2025
 The life story of a relatable dynamic of a sick Chinese immigrant parent and their child. Between the decisions of being present for your kid vs. focusing on your career, what would you choose as a parent? Life passes by before you. Every choice you make matters and affects your ending.
 
 - **2 minigames**
-- **3 unique endings**
+- **4 unique endings**
 - **5 original sound tracks**
 
 **Credits:**
