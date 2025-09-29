@@ -1,5 +1,7 @@
 ﻿# The script of the game goes in this file.
 
+# version 1.2
+
 # kitchen ----------------------
 default enokiMushroom = 0
 default bigMushroom = 0
