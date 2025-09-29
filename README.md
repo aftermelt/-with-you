@@ -1,6 +1,6 @@
-# -with-you
+# (with) you
 
-**version 1.2**
+## **version 1.2**
 
 # made for Texas Game Jam 2025
 https://itch.io/jam/texas-game-jam-2025
