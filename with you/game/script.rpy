@@ -92,7 +92,7 @@ label morning_loop:
     # ENDING HANDLING
     if kidPoints >= 6:
         jump best_ending
-    elif kidPoints <= -6:
+    elif kidPoints <= -5:
         jump worst_ending
 
     # time based endings
