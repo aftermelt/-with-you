@@ -25,34 +25,6 @@ label start:
     jump introduction
 
 label introduction:
-    scene bg sleep
-
-    "It's time to wake up."
-    play music "audio/morning.wav" fadein 0.5 loop
-
-    scene bg bedroom
-    with dissolve
-    "The morning sunlight seeps in through the blinds of your studio apartment."
-    "The hums of the city outside are louder than usual."
-    "You try forcing your eyes close."
-    play sound "audio/alarm-sund-radar.mp3"
-    "..."
-    "You lie still for a moment. Then you grab your phone from the nightstand."
-
-    show phone1 at top
-    with easeinbottom
-
-    "The news is as bleak as ever."
-    "At least your mother sent you a good morning text."
-    "You sigh, and turn off the alarm."
-    "After a few more minutes of lying in bed, you finally muster the energy to get up."
-    hide phone1
-    with easeouttop
-
-    "The stench of yesterday’s night at overtime still lingers from your clothes."
-    "You need to get ready for work."
-
-    call screen door1
 
     jump morning_loop
 
@@ -116,8 +88,19 @@ label morning_loop:
     $ day_multiplier = time_acceleration(day)
     $ day *= day_multiplier
 
+
     # ENDING HANDLING
-    
+    if kidPoints >= 6:
+        jump best_ending
+    elif kidPoints <= -6:
+        jump worst_ending
+
+    # time based endings
+    if day > 100:
+        if kidPoints > 0:
+            jump good_ending
+        else:
+            jump bad_ending
 
     stop music fadeout 0.3
     scene bg sleep
@@ -125,30 +108,49 @@ label morning_loop:
     play music "audio/morning.wav" fadein 0.5 loop
 
     "Day [day]"
-    "KidPoints: [kidPoints] | JobPoints: [jobPoints]"
+    # "KidPoints: [kidPoints] | JobPoints: [jobPoints]"
 
-    scene bg bedroom
+    scene bg bedroom_idle
+    if day == 1:
+        "The morning sunlight seeps in through the blinds of your studio apartment."
+        "The hums of the city outside are louder than usual."
+        "You try forcing your eyes close."
+
     with dissolve
     play sound "audio/alarm-sund-radar.mp3"
     "..."
-    "You lie still for a moment. Then you check the mail."
 
-    show mail at top
-    with easeinbottom
-    play sound "audio/envelope.mp3"
-    $ mail = check_mail(day, kidPoints)
-    if mail:
-        "You check your mailbox."
-        $ mail_text = "\n".join(mail)
-        "[mail_text]"
+    if day == 1:
+        "You groggily fumble for your phone."
 
+        show phone1 at top
+        with easeinbottom
 
-        hide mail
+        "The news is as bleak as ever."
+        "At least your mother sent you a good morning text."
+        "You sigh, and turn off the alarm."
+        "After a few more minutes of lying in bed, you finally muster the energy to get up."
+        hide phone1
         with easeouttop
 
         call screen door1
+    
+    if day > 1:
+        "You lie still for a moment. Then you check the mail."
+        show mail at top
+        with easeinbottom
+        play sound "audio/envelope.mp3"
+        $ mail = check_mail(day, kidPoints)
+        if mail:
+            "You check your mailbox."
+            $ mail_text = "\n".join(mail)
+            "[mail_text]"
+            hide mail
+            with easeouttop
 
-    label end: 
+        call screen door1
+
+    label goHere:
 
     scene bg choice
     with dissolve
@@ -158,10 +160,10 @@ label morning_loop:
         "You stand looking at two paths. One leads to the doorway out of your apartment."
         "The other opens left, to the kitchen where your child sits, swinging his legs on a chair."
         "He looks at you with big, hopeful eyes."
-        show game_boy_indifferent at halfsize, center
+        show game_boy_smile at halfsize, center
         with easeinbottom
         kid "You're always so busy, Mom, but I wanted to see you."
-    elif kidPoints <= -4 and day > 1:
+    if kidPoints <= -4 and day > 1:
         "Your kid looks bitter and sobs."
         "He scoots away from you as you enter the room."
         show game_boy_cry at halfsize, center
@@ -209,9 +211,7 @@ label morning_loop:
             stop music fadeout 0.3
             scene kitchen
             play music "audio/cooking.wav" fadein 0.5 loop
-            call hotpotMinigame
-
-
+            call hotpotMinigame from _call_hotpotMinigame
 
         "Go to job":
             $ jobPoints += 1
@@ -222,12 +222,16 @@ label morning_loop:
 
             # JOB MINIGAME
             stop music fadeout 0.3
-            scene Office_Table
+            scene game_office_light
+            play music "audio/office.wav" fadein 0.5 loop
             centered "Get Ready!{w=1}{nw}"
             call screen clicker
 
 
     jump morning_loop
+
+    label endIt:
+        
 
     return
 
@@ -256,10 +260,11 @@ label hotpotMinigame:
         $ tomato += 1
 
 
-    call hotpotCheck
+    call hotpotCheck from _call_hotpotCheck
 
 
     return
+
 label hotpotCheck:
     image finalHotpot = "hotpotfinally.png"
     image failHotpot = "hotpotfail.png"
@@ -268,16 +273,38 @@ label hotpotCheck:
         show finalHotpot
         "You made Hot Pot!"
         $ kidPoints += 2
+        $ enokiMushroom = 0
+        $ bigMushroom = 0
+        $ beef = 0
+        $ peppers = 0
+        $ lettuce = 0
+        $ tomato = 0
+        $ chickenbreast = 0
+        jump morning_loop
     elif (tomato > 0 or chickenbreast > 0):
         show failHotpot
         "You ruined Hot Pot!"
         $ kidPoints -= 1
+        $ enokiMushroom = 0
+        $ bigMushroom = 0
+        $ beef = 0
+        $ peppers = 0
+        $ lettuce = 0
+        $ tomato = 0
+        $ chickenbreast = 0
+        jump morning_loop
     elif (beef > 2 or bigMushroom > 2 or enokiMushroom > 1 or lettuce > 1 or peppers > 1):
         show failHotpot
         "You ruined Hot Pot!"
+        $ enokiMushroom = 0
+        $ bigMushroom = 0
+        $ beef = 0
+        $ peppers = 0
+        $ lettuce = 0
+        $ tomato = 0
+        $ chickenbreast = 0
         $ kidPoints -= 1
-
-
+        jump morning_loop
     else:
         jump hotpotMinigame
 
@@ -285,15 +312,20 @@ label hotpotCheck:
 
 label win:
     $ renpy.pause(2, hard=True)
+    play sound "audio/yay.mp3" fadein 0.2
     centered "Completed! :D"
-    return
+    $ points = 10
+    jump morning_loop
 
 label lost:
     centered "Failed! :( "
-    return
+    $ points = 10
+    jump morning_loop
+
 
 screen setDragImages:
     add "kitchen.png"
+
 
 
     text "Make Hotpot for Shíyuè! Read the recipe on the right and":
@@ -319,8 +351,6 @@ screen setDragImages:
     text "Enoki Mushroom x1":
         pos (1400, 100)
         color "#120624"
-
-
 
 
     text "Big Mushroom x2":
@@ -495,18 +525,19 @@ screen clicker:
     imagebutton:
         idle "yellow button.png"
         action [
-            Play("sound", "click.wav"),
+            Play("sound", "orb.mp3"),
             SetVariable("clicked", False),
             If(points >= max_point, true=Jump("win"), false=SetVariable("points", points + plus))
         ]
-        xpos 0.5
-        ypos 0.5
+        xpos 0.58
+        ypos 0.53
         anchor (0.5, 0.5)
-        xysize (300, 300)
+        xysize (500, 500)
+        focus_mask True
 
     text "Score":
-        xpos 0.62
-        ypos 0.3
+        xpos 0.645
+        ypos 0.25
         xanchor 1.0
         yanchor 0.5
         size 30
@@ -515,8 +546,8 @@ screen clicker:
         outlines [(1, "#000000", 0, 0)]
 
     text "[points] / [max_point]":
-        xpos 0.65
-        ypos 0.35
+        xpos 0.675
+        ypos 0.3
         xanchor 1.0
         yanchor 0.5
         size 50
@@ -525,11 +556,94 @@ screen clicker:
         outlines [(2, "#000000", 0, 0)]
         drop_shadow (2, 2)
 
-    vbar:
-        value StaticValue(points, max_point)
-        xpos 0.05
-        ypos 0.5
-        xanchor 0.0
-        yanchor 0.5
-        xsize 40
-        ysize 400
+
+label best_ending:
+    scene bg choice
+    with dissolve
+    stop music fadeout 0.5
+    play music "audio/good_end.wav" fadein 0.5 loop
+    kid "um… I made something"
+    show game_boy_embarassed at halfsize, center
+    with easeinbottom
+    "He shuffles, almost embarassed, before handing you a piece of paper"
+    show mail at top
+    with easeinbottom
+    play sound "audio/envelope.mp3"
+    "You open the small paper. On it are crayon marks, uneven and bright."
+    hide mail
+    scene bg best
+    "*A stick figure version of you stands next to him under a lopsided sun.*"
+    "noticing your smile, his face brightens up."
+    show game_boy_happy at halfsize, left
+    kid "It's us. See? You’re always here. Even when you’re busy."
+    "Shíyuè..."
+    kid "Do you like it? I'll keep drawing more"
+    "*Shíyuè runs off*"
+    hide game_boy_happy
+    with easeoutleft
+    "Outside, the city hums softly, peacefully silent."
+    "Here, you realize you have all the time you need."
+
+
+    centered "Best Ending!"
+    $ renpy.full_restart()
+    return
+
+label worst_ending:
+    scene bg worst
+    with dissolve
+    stop music fadeout 0.5
+    play music "audio/bad_end.wav" fadein 0.5 loop
+
+    "*The night is silent, almost eerie. The rain spills on the window pane."
+    "*Inside, the light is dim.*"
+    "*You sit alone at your desk, the weight of exhaustion heavy on your shoulders.*"
+    "Your eyes feel dry and heavy"
+    "*You don’t remember the last time you spoke with Shíyuè*"
+    "You wished that you had spent more time with Shíyuè"
+    "You fight the weariness, but the heaviness of your drooping eyes finally sends you into the darkness. "
+
+    centered "Worst Ending."
+    $ renpy.full_restart()
+    return
+
+label good_ending:
+    scene bg good_ending
+    with dissolve
+    stop music fadeout 0.5
+    play music "audio/good_end.wav" fadein 0.5 loop
+    "*The air is soft. A breeze ruffles through the grass as friends and family pay their respect.*"
+    "*The visitors trickle out, leaving the last of the grieving.*"
+    kid "…These were your favorite flowers right?"
+    play sound "audio/footsteps.mp3"
+    show game_boy_smile at halfsize, center
+    with easeinbottom
+    kid "I picked them myself."
+    kid "You worked hard, so please rest well."
+    kid "I want you to know that I treasured my time…"
+    kid "with you."
+    hide game_boy_smile
+    with easeoutleft
+
+    centered "Good Ending!"
+    $ renpy.full_restart()
+    return
+
+label bad_ending:
+    scene bg bad_ending
+    with dissolve
+    stop music fadeout 0.5
+    play music "audio/bad_end.wav" fadein 0.5 loop
+    "*A stale silence hangs in the air.*"
+    play sound "audio/footsteps.mp3"
+    "*Footsteps, lone and slow, approach.*"
+    show game_boy_indifferent at halfsize, center
+    with easeinbottom
+    kid "It seems like i’m alone today too"
+    kid "… I waited for you… "
+    kid "But it seems we’re out of time…"
+    hide game_boy_indifferent
+    with easeoutleft
+    centered "Bad Ending."
+    $ renpy.full_restart()
+    return
